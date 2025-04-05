@@ -1,61 +1,32 @@
 import { supabase } from '../lib/supabaseClient';
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+  try {
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
 
-  export default async function handler(req, res) {
     const { user_id, friend_id } = req.body;
-  
+
+    if (!user_id || !friend_id) {
+      return res.status(400).json({ error: 'Missing user_id or friend_id' });
+    }
+
     const { error } = await supabase.from('friends').insert({
       user_id,
       friend_id,
       status: 'pending',
     });
-  
+
     if (error) {
       console.error('❌ Supabase insert error:', JSON.stringify(error, null, 2));
-      return res.status(500).json({ error: 'Failed to send friend request' });
+      return res.status(500).json({ error: 'Failed to send friend request', details: error.message });
     }
-  
+
     return res.status(200).json({ message: 'Friend request sent' });
+
+  } catch (err) {
+    console.error('❌ Function crashed:', err);
+    return res.status(500).json({ error: 'Server error', details: err.message });
   }
-  
-console.log('Incoming request path:', path);
-console.log('Body:', req.body);
-
-
-
-  if (path === 'request') {
-    const { user_id, friend_id } = req.body;
-
-    const { error } = await supabase.from('friends').insert({
-      user_id,
-      friend_id,
-      status: 'pending',
-    });
-
-    if (error) {
-        console.error('❌ Supabase insert error:', JSON.stringify(error, null, 2));
-        return res.status(500).json({ error: 'Failed to send friend request' });
-      }      
-    
-
-  if (path === 'accept') {
-    const { user_id, friend_id } = req.body;
-
-    const { error } = await supabase
-      .from('friends')
-      .update({ status: 'accepted' })
-      .match({ user_id, friend_id });
-
-    if (error) {
-      return res.status(500).json({ error: 'Failed to accept friend request' });
-    }
-
-    return res.status(200).json({ message: 'Friend request accepted' });
-  }
-
-  return res.status(400).json({ error: 'Invalid path' });
 }
