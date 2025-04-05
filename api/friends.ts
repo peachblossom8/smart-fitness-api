@@ -21,11 +21,10 @@ console.log('Body:', req.body);
     });
 
     if (error) {
-      return res.status(500).json({ error: 'Failed to send friend request' });
-    }
-
-    return res.status(200).json({ message: 'Friend request sent' });
-  }
+        console.error('Supabase insert error:', error);
+        return res.status(500).json({ error: 'Failed to send friend request', details: error.message });
+      }
+    
 
   if (path === 'accept') {
     const { user_id, friend_id } = req.body;
