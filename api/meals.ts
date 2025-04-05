@@ -13,12 +13,12 @@ export default async function handler(req, res) {
     calories,
     health_score,
     meal_data,
-    created_at: new Date().toISOString(),
+    created_at: new Date().toISOString()
   });
 
   if (error) {
     console.error('Supabase error:', error);
-    return res.status(500).json({ error: 'Failed to save meal', details: error.message });
+    return res.status(500).json({ error: 'Failed to save meal' });
   }
 
   return res.status(200).json({ message: 'Meal saved successfully' });
