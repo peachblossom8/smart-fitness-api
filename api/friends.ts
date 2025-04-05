@@ -21,9 +21,9 @@ console.log('Body:', req.body);
     });
 
     if (error) {
-        console.error('Supabase insert error:', error);
-        return res.status(500).json({ error: 'Failed to send friend request', details: error.message });
-      }
+        console.error('❌ Supabase insert error:', JSON.stringify(error, null, 2));
+        return res.status(500).json({ error: 'Failed to send friend request' });
+      }      
     
 
   if (path === 'accept') {
