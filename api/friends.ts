@@ -6,6 +6,10 @@ export default async function handler(req, res) {
   }
 
   const path = Array.isArray(req.query.path) ? req.query.path[0] : req.query.path;
+console.log('Incoming request path:', path);
+console.log('Body:', req.body);
+
+
 
   if (path === 'request') {
     const { user_id, friend_id } = req.body;
