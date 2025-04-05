@@ -5,7 +5,23 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const path = Array.isArray(req.query.path) ? req.query.path[0] : req.query.path;
+  export default async function handler(req, res) {
+    const { user_id, friend_id } = req.body;
+  
+    const { error } = await supabase.from('friends').insert({
+      user_id,
+      friend_id,
+      status: 'pending',
+    });
+  
+    if (error) {
+      console.error('❌ Supabase insert error:', JSON.stringify(error, null, 2));
+      return res.status(500).json({ error: 'Failed to send friend request' });
+    }
+  
+    return res.status(200).json({ message: 'Friend request sent' });
+  }
+  
 console.log('Incoming request path:', path);
 console.log('Body:', req.body);
 
