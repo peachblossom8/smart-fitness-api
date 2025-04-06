@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       health_score: 3,
     };
 
-    const { data, error } = await supabase.from('meals').insert({
+    const { error } = await supabase.from('meals').insert({
       user_id,
       image_url: '[captured]',
       meal_data: aiResponse.meal_data,
