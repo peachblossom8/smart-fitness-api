@@ -8,21 +8,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!user_id || !image_base64) return res.status(400).json({ error: 'Missing user_id or image_base64' });
 
   try {
-    const roboflowRes = await fetch('https://detect.roboflow.com/food-identifier-l0fli/3?api_key=IqOUsGAwYewqeHHiaEzK', {
+    const roboflowRes = await fetch('https://serverless.roboflow.com/infer/workflows/smart-fitness/custom-workflow-3', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `image=${encodeURIComponent(`data:image/jpeg;base64,${image_base64}`)}`
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        api_key: 'IqOUsGAwYewqeHHiaEzK',
+        inputs: {
+          image: {
+            type: 'base64',
+            value: image_base64,
+          },
+        },
+      }),
     });
 
     const result = await roboflowRes.json();
-
     console.log('📦 Roboflow result:', result);
 
-    // Mock fallback response
+    const prediction = result.predictions?.[0];
+
     const aiResponse = {
-      meal_data: result.predictions?.[0]?.class || 'Unknown Meal',
-      calories: 400,
-      health_score: 2
+      meal_data: prediction?.class || 'Unknown Meal',
+      calories: 400, // Optional: map prediction.class → calorie estimate
+      health_score: 2, // Optional: assign based on class or confidence
     };
 
     return res.status(200).json(aiResponse);
